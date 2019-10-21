@@ -4,6 +4,21 @@
 # Antonio Barbalace, Stevens 2019
 # To be used when no distributed file system is available
 
+# check for optional arguments
+PASSWORD=""
+for SCRIPTARG in "$@" ; do
+  case $SCRIPTARG in
+    -p=*|--password=*)
+    PASSWORD="sshpass -p ${SCRIPTARG#*=} "
+    shift
+    ;;
+    *)
+    echo "help"
+    exit 0
+    ;;
+  esac
+done
+
 # basic checks
 if [ ! -f Makefile ] ; then echo "Error: Makefile doesn't exist" ; exit 1 ; fi
 if [ -z "`cat /proc/popcorn_peers`" ] ; then echo "Error: connect to another Popcorn machine first" ; exit 1 ; fi
@@ -23,11 +38,12 @@ if [ -z "$ALL" ] ; then echo "Error: malformed /proc/popcorn_peers (all)" ; exit
 for CURRENT in $ALL ; do
   if [ "$CURRENT" = "$MYSELF" ] ; then continue ; fi
 
-  # copy files
-  scp ${EXEC_NAME}_aarch64 ${EXEC_NAME}_x86-64 ${USER}@${CURRENT}:`pwd`/
+  # copy files, eventually create directory on remote
+  ${PASSWORD}scp ${EXEC_NAME}_aarch64 ${EXEC_NAME}_x86-64 ${USER}@${CURRENT}:`pwd`/
+  if [ $? -ne 0 ] ; then echo "creating `pwd` on remote ${CURRENT}" ; ${PASSWORD}ssh ${USER}@${CURRENT} "mkdir `pwd`" ; ${PASSWORD}scp ${EXEC_NAME}_aarch64 ${EXEC_NAME}_x86-64 ${USER}@${CURRENT}:`pwd`/ ; fi
 
   # create symbolic link and list file
-  FILELIST=$(ssh ${USER}@${CURRENT} "cd `pwd` ; FULLPATH=\`which ssh\` ; if [ ! -z \"\`file \${FULLPATH} | grep aarch64\`\" ] ; then ARCH=\"_aarch64\" ; else ARCH=\"_x86-64\" ; fi ; cp ${EXEC_NAME}\${ARCH} ${EXEC_NAME} ; ls -l")
+  FILELIST=$(${PASSWORD}ssh ${USER}@${CURRENT} "cd `pwd` ; FULLPATH=\`which ssh\` ; if [ ! -z \"\`file \${FULLPATH} | grep aarch64\`\" ] ; then ARCH=\"_aarch64\" ; else ARCH=\"_x86-64\" ; fi ; cp ${EXEC_NAME}\${ARCH} ${EXEC_NAME} ; ls -l")
 
   # checking if everything was copied succesfully (TODO check sizes)
   if [ -z "echo $FILELIST | grep ${EXEC_NAME}\$" ] ; then echo "Error: cannot find ${EXEC_NAME} on remote ${CURRENT}" ; exit 1 ; fi
