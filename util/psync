@@ -9,13 +9,13 @@ PASSWORD=""
 for SCRIPTARG in "$@" ; do
   case $SCRIPTARG in
     -p=*|--password=*)
-    PASSWORD="sshpass -p ${SCRIPTARG#*=} "
-    shift
-    ;;
+      PASSWORD="sshpass -p ${SCRIPTARG#*=} "
+      shift
+      ;;
     *)
-    echo "help"
-    exit 0
-    ;;
+      echo "Usage: ${0##*/} [-p|--password=PASSWORD]"
+      exit 0
+      ;;
   esac
 done
 
