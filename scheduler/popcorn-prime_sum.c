@@ -25,16 +25,23 @@ int is_prime (unsigned int n)
 
 int prime_sum(int index, int range)
 {
-	int i, cnt =0;
+	int i, cnt =0, nid =current_nid();
 
-        printf("[%d,%d] thread index %d, range %d\n",
-		 getpid(), gettid(), index, range);
-	for(i = index; i < (index + range); i++)
+        printf("[%d,%d] thread index %d, range %d (node %d)\n",
+		 getpid(), gettid(), index, range, nid);
+	for(i = index; i < (index + range); i++) {
+		int cnid = current_nid();
+		if (cnid != nid) {
+			printf("[%d,%d] thread index %d, range %d (node %d)\n",
+		                 getpid(), gettid(), index, range, cnid);
+			nid = cnid;
+		}
 		if (is_prime(i))
 			cnt++;
+	}
       
-	printf("[%d,%d] thread sum %d\n",
-		getpid(), gettid(), cnt);
+	printf("[%d,%d] thread sum %d (node %d)\n",
+		getpid(), gettid(), cnt, nid);
 	return cnt;
 }
 
