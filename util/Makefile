@@ -13,11 +13,11 @@ POPCORN := /usr/local/popcorn
 ARM64_LIBGCC := $(shell dirname \
                 $(shell aarch64-linux-gnu-gcc -print-libgcc-file-name))
 
-# FIXME name of the generated executable
-BIN := popcorn-threadS
+# FIXME sepcify the name of the program
+#BIN := popcorn-program
 
 # FIXME specify source files
-SRC := $(shell ls *.c)
+#SRC := $(shell ls *.c)
 
 APP_DIR := $(shell pwd)
 
@@ -26,11 +26,11 @@ APP_DIR := $(shell pwd)
 ###############################################################################
 
 # Compiler
-CC         := $(POPCORN)/bin/clang
+CC         := $(POPCORN)/bin/clang 
 CXX        := $(POPCORN)/bin/clang++
-CFLAGS     := -O0 -Wall -nostdinc -g -lpthread
+CFLAGS     := -O0 -Wall -nostdinc -g 
 HET_CFLAGS := $(CFLAGS) -popcorn-migratable -fno-common \
-              -ftls-model=initial-exec
+              -ftls-model=initial-exec 
 
 IR := $(SRC:.c=.ll)
 
@@ -39,13 +39,12 @@ LD      := $(POPCORN)/bin/ld.gold
 LDFLAGS := -z noexecstack -z relro --hash-style=gnu --build-id -static
 LIBS    := /lib/crt1.o \
            /lib/libc.a \
-           /lib/libopenpop.a \
            /lib/libmigrate.a \
            /lib/libstack-transform.a \
            /lib/libelf.a \
-           /lib/libpthread.a \
            /lib/libc.a \
-           /lib/libm.a
+           /lib/libm.a \
+           $(LIBS)
 LIBGCC  := --start-group -lgcc -lgcc_eh --end-group
 
 # Alignment
@@ -145,7 +144,7 @@ clean:
 	@echo " [CLEAN] $(ARM64_ALIGNED) $(ARM64_BUILD) $(X86_64_ALIGNED) \
 		$(X86_64_BUILD) $(X86_64_SD_BUILD) $(X86_64_LD_SCRIPT) \
 		$(ARM64_LD_SCRIPT) $(ALIGN_WORKDIR) *.ll *.o"
-	@rm -rf $(ARM64_ALIGNED) $(ARM64_BUILD) $(X86_64_ALIGNED) $(X86_64_BUILD) \
+	@rm -rf $(ARM64_ALIGNED) $(ARM64_BUILD) $(X86_64_ALIGNED) $(X86_64_BUILD) $(BIN)\
 		$(X86_64_SD_BUILD) $(X86_64_LD_SCRIPT) $(ARM64_LD_SCRIPT) *.ll *.o
 
 %.dir:
