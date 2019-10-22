@@ -10,6 +10,7 @@ static int  answer = 0;
 
 int prime_sum(int index, int range)
 {
+	printf("in function [%d] [%d]\n",getpid(),gettid());
 	int i,j,sign = 1,tem = 0;
 	for(i = index; i<index + 100000; i++)
         {
@@ -18,6 +19,7 @@ int prime_sum(int index, int range)
                 if (sign != 0 && j==i) {tem ++; }
                 sign = 1;
         }
+	printf("done function [%d] [%d]\n",getpid(),gettid());
 	return tem;
 }
 
@@ -27,7 +29,9 @@ void *thr_fn(void *arg)
 {
 	printf("start [%d] [%d]\n",getpid(),gettid());
 	int index = *(int*) arg;
-	int range = 100000, tem = 0;
+	int range = 1000000, tem = 0;
+	sleep(5);
+	
  	tem = prime_sum(index, range);
 	printf("finish [%d]\n",gettid());
 	if (pthread_mutex_lock(&mutex) != 0) printf("lock error!\n");
@@ -45,7 +49,7 @@ int main(void)
 		printf("I am fucked!\n");
                 return 1;
         }
-	int index[4] = {0,100000,200000,300000};
+	int index[4] = {0,1000000,2000000,3000000};
         for(i = 0;i < 4; i++) {
 		err = pthread_create(&pt[i], NULL, thr_fn, &index[i]);
 		if (err != 0){
