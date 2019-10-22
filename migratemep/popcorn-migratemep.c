@@ -27,6 +27,7 @@ void *thread(void *arg)
 
 int main(void)
 {	
+	int ii;
 	pthread_t pthread;
 
 	if (pthread_create(&pthread, NULL, thread, 0) != 0) {
@@ -34,7 +35,10 @@ int main(void)
 		return 1;
 	}
 
-	printf("main, node id %d\n", current_nid());
+	for (ii=0; ii<(N/2); ii++) {
+		printf("main, node id %d\n", current_nid());
+		sleep(2);
+	}
 
 	if (pthread_join(pthread, NULL) != 0) {
 		perror("pthread_join");
