@@ -12,7 +12,7 @@ int prime_sum(int index, int range)
 {
 	printf("in function [%d] [%d]\n",getpid(),gettid());
 	int i,j,sign = 1,tem = 0;
-	for(i = index; i<index + 100000; i++)
+	for(i = index; i<index + range ; i++)
         {
                 for(j = 2; j< i; j++){
                         if (i % j ==0){ break; sign = 0;}}
@@ -29,8 +29,8 @@ void *thr_fn(void *arg)
 {
 	printf("start [%d] [%d]\n",getpid(),gettid());
 	int index = *(int*) arg;
-	int range = 1000000, tem = 0;
-	sleep(5);
+	int range = 100000, tem = 0;
+	sleep(2);
 	
  	tem = prime_sum(index, range);
 	printf("finish [%d]\n",gettid());
@@ -49,7 +49,7 @@ int main(void)
 		printf("I am fucked!\n");
                 return 1;
         }
-	int index[4] = {0,1000000,2000000,3000000};
+	int index[4] = {0,100000,200000,300000};
         for(i = 0;i < 4; i++) {
 		err = pthread_create(&pt[i], NULL, thr_fn, &index[i]);
 		if (err != 0){
