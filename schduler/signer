@@ -1,0 +1,15 @@
+#!/bin/sh
+# Popcorn Linux sync
+# Tong Xing, Stevens 2019
+# Send signal to thread that have keyword: "popcorn"
+
+# Check the System process every 1 sec and send signal. 
+while true
+do
+	Threads=`ps -A -T | grep popcorn | awk '{if (NR>1){print $2}}'`
+	for thread in $Threads ; 
+	do
+		kill -35 $thread ; 
+	done
+	sleep 1;
+done
