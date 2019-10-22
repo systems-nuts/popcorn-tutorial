@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 #include <pthread.h>
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -24,14 +23,14 @@ int main(void)
 
 	if (pthread_create(&pthread, NULL, thread, 0) != 0) {
 		perror("pthread_create");
-		exit(1);
+		return 1;
 	}
 
 	printf("main, node id %d\n", current_nid());
 
 	if (pthread_join(pthread, NULL) != 0) {
 		perror("pthread_join");
-		exit(1);
+		return 1;
 	}
 	
 	return 0;

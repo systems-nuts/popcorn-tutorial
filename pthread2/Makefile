@@ -3,6 +3,6 @@
 BIN := popcorn-pthread
 
 # list of the source files
-SRC := popcorn_thread.c
+SRC := popcorn-pthread.c
 
 include /usr/local/popcorn/share/build/Makefile
