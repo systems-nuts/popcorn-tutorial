@@ -5,7 +5,7 @@
 #include <malloc.h>
 #include "migrate.h"
 
-#define MAX 360000
+#define MAX 800000
 #define N 4
 
 static pthread_mutex_t sum_mutex;
@@ -39,8 +39,8 @@ int prime_sum(int index, int range)
 			cnt++;
 	}
       
-	printf("[%d,%d] thread sum %d (node %d)\n",
-		getpid(), gettid(), cnt, nid);
+	printf("[%d,%d] thread index %d, sum %d (node %d)\n",
+		getpid(), gettid(), index, cnt, nid);
 	return cnt;
 }
 
