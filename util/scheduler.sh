@@ -20,42 +20,47 @@ for SCRIPTARG in "$@" ; do
   esac
 done
 
-# Check the System process every 1 sec and send signal. 
+# Continuosly check the status of the system
 while true
 do
-	Threads=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
-	CurrentNum=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l`;
+	# list the current popcorn threads on the current machine
+	THREADS=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
+	CURRENTNUM=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l`;
+	
 	MYSELF=`cat /proc/popcorn_peers | awk '/^*[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $3}'` ;
 	if [ -z "$MYSELF" ] ; then echo "Error: malformed /proc/popcorn_peers" ; exit 1 ; fi
 	ALL=`cat /proc/popcorn_peers | sed 's/*/ /' | awk '/^[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $2}'`
 	if [ -z "$ALL" ] ; then echo "Error: malformed /proc/popcorn_peers (all)" ; exit 1 ; fi
 
+	# Balance the number of threads for each machine (TODO extend the algo to more than 2 machines)
 	for CURRENT in $ALL ; 
 	do
+		# skip if myself
 		if [ "$CURRENT" = "$MYSELF" ] ; then continue ; fi
-	  	Remotes=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep popcorn | awk '{if (NR>1) {print $2}}'`;
-	  	RemoteNum=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep popcorn | awk '{if (NR>1) {print $2}}' | wc -l `;
-		if [ $RemoteNum -eq $CurrentNum ] ;  then break ; fi
-		if [ $RemoteNum -gt $CurrentNum ]  
-			then
-			let time=($RemoteNum-$CurrentNum)/2
-			for thread in $Remotes ; 
-			do
-				${PASSWORD}ssh root@$CURRENT kill -35 $thread
-				let time=$time-1  
+		
+		# list the current popcorn threads on remote
+	  	REMOTES=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORKD | awk '{if (NR>1) {print $2}}'`;
+	  	REMOTENUM=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l `;
+		
+		# already balanced
+		if [ $REMOTENUM -eq $CURRENTNUM ] ; then break ; fi
+		# remote has more threads - move threads to current
+		if [ $REMOTENUM -gt $CURRENTNUM ] ; then
+			let TIME=($REMOTENUM-$CURRENTNUM)/2
+			for THREAD in $REMOTES ; do
+				${PASSWORD}ssh root@$CURRENT kill -35 $THREAD
+				let TIME=$TIME-1  
                                 if [ $time -eq 0 ] ; then break ; fi
 			done
 			break;
 		fi
-		if [ $RemoteNum -lt $CurrentNum ]  
-			then
-			let time=($CurrentNum-$RemoteNum)/2
-                        for thread in $Threads ; do
-                                kill -35 $thread
-				let time=$time-1
-				if [ $time -eq 0 ] 
-				then break 
-				fi
+		# remote has less threads - move threads to remote
+		if [ $REMOTENUM -lt $CURRENTNUM ] ; then
+			let TIME=($CURRENTNUM-$REMOTENUM)/2
+                        for THREAD in $THREADS ; do
+                                kill -35 $THREAD
+				let TIME=$TIME-1
+				if [ $TIME -eq 0 ] ; then break ; fi
                         done
 			break;
 		fi
