@@ -20,16 +20,19 @@ for SCRIPTARG in "$@" ; do
   esac
 done
 
+MYSELF=`cat /proc/popcorn_peers | awk '/^*[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $3}'` ;
+if [ -z "$MYSELF" ] ; then
+	echo "Error: malformed /proc/popcorn_peers" ; exit 1 ; fi
+
+ALL=`cat /proc/popcorn_peers | sed 's/*/ /' | awk '/^[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $2}'`
+if [ -z "$ALL" ] ; then
+	echo "Error: malformed /proc/popcorn_peers (all)" ; exit 1 ; fi
+
 # Continuosly check the status of the system
 while true ; do
 	# list the current popcorn threads on the current machine
 	THREADS=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
 	CURRENTNUM=`printf "$THREADS" | wc -l`;
-	
-	MYSELF=`cat /proc/popcorn_peers | awk '/^*[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $3}'` ;
-	if [ -z "$MYSELF" ] ; then echo "Error: malformed /proc/popcorn_peers" ; exit 1 ; fi
-	ALL=`cat /proc/popcorn_peers | sed 's/*/ /' | awk '/^[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $2}'`
-	if [ -z "$ALL" ] ; then echo "Error: malformed /proc/popcorn_peers (all)" ; exit 1 ; fi
 
 	# Balance the number of threads for each machine (TODO extend the algo to more than 2 machines)
 	for CURRENT in $ALL ; 
