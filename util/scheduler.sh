@@ -45,7 +45,7 @@ while true ; do
 	  	REMOTENUM=`printf "$REMOTES" | wc -l`;
 		
 		# already balanced
-		if [ $REMOTENUM -eq $CURRENTNUM ] ; then break ; fi
+		if [ $REMOTENUM -eq $CURRENTNUM ] ; then sleep 1 ; break ; fi
 		# remote has more threads - move threads to current
 		if [ $REMOTENUM -gt $CURRENTNUM ] ; then
 			let TIME=($REMOTENUM-$CURRENTNUM)/2
