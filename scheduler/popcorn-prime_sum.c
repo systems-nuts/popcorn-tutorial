@@ -1,10 +1,10 @@
+#define _GNU_SOURCE
 #include <pthread.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <string.h>
-#include "migrate.h"
 #include <malloc.h>
+
+#include "migrate.h"
 
 #define MAX 4000000
 #define N 4
