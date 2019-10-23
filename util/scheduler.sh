@@ -24,7 +24,7 @@ done
 while true ; do
 	# list the current popcorn threads on the current machine
 	THREADS=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
-	CURRENTNUM=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l`;
+	CURRENTNUM=`printf "$THREADS" | wc -l`;
 	
 	MYSELF=`cat /proc/popcorn_peers | awk '/^*[ \t]+[0-9]+[ \t]+[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ \t]+/{print $3}'` ;
 	if [ -z "$MYSELF" ] ; then echo "Error: malformed /proc/popcorn_peers" ; exit 1 ; fi
@@ -39,7 +39,7 @@ while true ; do
 		
 		# list the current popcorn threads on remote
 	  	REMOTES=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORKD | awk '{if (NR>1) {print $2}}'`;
-	  	REMOTENUM=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l `;
+	  	REMOTENUM=`printf "$REMOTES" | wc -l`;
 		
 		# already balanced
 		if [ $REMOTENUM -eq $CURRENTNUM ] ; then break ; fi
