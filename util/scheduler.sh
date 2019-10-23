@@ -21,8 +21,7 @@ for SCRIPTARG in "$@" ; do
 done
 
 # Continuosly check the status of the system
-while true
-do
+while true ; do
 	# list the current popcorn threads on the current machine
 	THREADS=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
 	CURRENTNUM=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}' | wc -l`;
