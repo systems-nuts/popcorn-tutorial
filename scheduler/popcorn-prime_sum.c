@@ -3,10 +3,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <malloc.h>
-
 #include "migrate.h"
 
-#define MAX 4000000
+#define MAX 360000
 #define N 4
 
 static pthread_mutex_t sum_mutex;
