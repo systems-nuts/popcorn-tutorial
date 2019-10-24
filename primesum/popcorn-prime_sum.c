@@ -5,7 +5,7 @@
 #include <malloc.h>
 #include "migrate.h"
 
-#define MAX 800000
+#define MAX 400000
 #define N 4
 
 static pthread_mutex_t sum_mutex;

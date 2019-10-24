@@ -33,7 +33,7 @@ while true ; do
 	# list the current popcorn threads on the current machine
 	THREADS=`ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
 	CURRENTNUM=`printf "$THREADS" | wc -l`;
-
+	
 	# Balance the number of threads for each machine (TODO extend the algo to more than 2 machines)
 	for CURRENT in $ALL ; 
 	do
@@ -41,7 +41,7 @@ while true ; do
 		if [ "$CURRENT" = "$MYSELF" ] ; then continue ; fi
 		
 		# list the current popcorn threads on remote
-	  	REMOTES=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORKD | awk '{if (NR>1) {print $2}}'`;
+	  	REMOTES=`${PASSWORD}ssh root@$CURRENT ps -A -T | grep $KEYWORD | awk '{if (NR>1) {print $2}}'`;
 	  	REMOTENUM=`printf "$REMOTES" | wc -l`;
 		
 		# already balanced
@@ -52,7 +52,7 @@ while true ; do
 			for THREAD in $REMOTES ; do
 				${PASSWORD}ssh root@$CURRENT kill -35 $THREAD
 				let TIME=$TIME-1  
-                                if [ $time -eq 0 ] ; then break ; fi
+                                if [ $TIME -eq 0 ] ; then break ; fi
 			done
 			break;
 		fi
