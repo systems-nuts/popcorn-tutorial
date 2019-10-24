@@ -741,11 +741,7 @@ int main( int argc, char **argv )
 
 /*  End of timing, obtain maximum time of all processors */
     timer_stop( 0 );
-    printf("ready to read time\n");
     timecounter = timer_read( 0 );
-    if(printf("time is %f \n",timecounter))
-	
-
 
 /*  This tests that keys are in sequence: sorting of last ranked key seq
     occurs here, but is an untimed operation                             */

@@ -13,9 +13,6 @@ static double elapsed_time( void )
     double t;
 
     wtime( &t );
-    printf("print elapsed_time\n");
-    printf("t_int:%f\n",t);
-printf("t_float:%f\n",t);
     return( t );
 }
 
@@ -48,11 +45,8 @@ void timer_stop( int n )
     double t, now;
 
     now = elapsed_time();
-    printf("now: %f\n",now);
     t = now - start[n];
-    printf("t: %f\n",t);
     elapsed[n] += t;
-    printf("time_stop is: %f\n", elapsed[n]);
 }
 
 
@@ -61,7 +55,6 @@ void timer_stop( int n )
 /*****************************************************************/
 double timer_read( int n )
 {
-    printf("time_read is: %f\n", elapsed[n]);
     return( elapsed[n] );
 }
 
