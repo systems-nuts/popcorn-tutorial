@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
   } else {
     mflops = 0.0;
   }
-  printf("[%d]\n",gettid());
   print_results("FT", Class, NX, NY, NZ, niter,
                 total_time, mflops, "          floating point", verified, 
                 NPBVERSION, COMPILETIME, CS1, CS2, CS3, CS4, 
