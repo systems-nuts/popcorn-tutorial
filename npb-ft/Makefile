@@ -108,6 +108,7 @@ X86_64_LDFLAGS := -m elf_x86_64 -L$(X86_64_POPCORN)/lib \
 ###############################################################################
 
 all: post_process
+	cp $(X86_64_ALIGNED) $(BIN)
 
 ir: $(IR)
 
@@ -143,7 +144,7 @@ clean:
 		$(X86_64_BUILD) $(X86_64_SD_BUILD) $(X86_64_LD_SCRIPT) \
 		$(ARM64_LD_SCRIPT) $(ALIGN_WORKDIR) *.ll *.o"
 	@rm -rf $(ARM64_ALIGNED) $(ARM64_BUILD) $(X86_64_ALIGNED) $(X86_64_BUILD) \
-		$(X86_64_SD_BUILD) $(X86_64_LD_SCRIPT) $(ARM64_LD_SCRIPT) *.ll *.o
+		$(X86_64_SD_BUILD) $(X86_64_LD_SCRIPT) $(ARM64_LD_SCRIPT) $(BIN) *.ll *.o
 
 %.dir:
 	@echo " [MKDIR] $*"

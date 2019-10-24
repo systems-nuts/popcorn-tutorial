@@ -72,7 +72,7 @@ void appft(int niter, double *total_time, logical *verified)
   CompExp(NZ, exp3);          
   fftXYZ(1, NX, NY, NZ, xnt, (dcomplex *)y, exp1, exp2, exp3);
   timer_stop(2);
-  printf("%d\n",gettid());
+  printf("[%d]\n",gettid());
   timer_start(1);
   migrate((current_nid() ? 0 : 1), NULL, NULL);
   if (timers_enabled) timer_start(13);
@@ -113,7 +113,7 @@ void appft(int niter, double *total_time, logical *verified)
     CalculateChecksum(&sums[kt], kt, NX, NY, NZ, xnt);
     if (timers_enabled) timer_stop(10);
   }
- printf("%d\n", gettid());
+ printf("[%d]\n", gettid());
 
  migrate((current_nid() ? 0 : 1), NULL, NULL);
 
@@ -125,7 +125,7 @@ void appft(int niter, double *total_time, logical *verified)
 
   *total_time = timer_read(1);
   if (!timers_enabled) return;
- printf("%d\n",gettid());
+  printf("[%d]\n",gettid());
 
   printf(" FT subroutine timers \n");
   printf(" %26s =%9.4f\n", "FT total                  ", timer_read(1));
